@@ -1,0 +1,38 @@
+-- 1. Сначала заполняем таблицу ролей (если они еще не заполнены)
+INSERT INTO roles (id, name) VALUES 
+(1, 'Администратор'),
+(2, 'Менеджер'),
+(3, 'Клиент')
+ON CONFLICT (id) DO NOTHING;
+
+-- 2. Добавляем тестовых пользователей
+-- Обрати внимание: пароли в рамках этого шага пишем обычным текстом,
+-- так как в нашем main.py проверка идет по прямому совпадению (user.password_hash == password)
+INSERT INTO users (username, password_hash, full_name, role_id) VALUES 
+('admin', 'admin123', 'Иванов Пётр Сергеевич', 1),
+('manager', 'manage123', 'Петрова Анна Владимировна', 2),
+('client', 'client123', 'Сидоров Алексей Николаевич', 3)
+ON CONFLICT DO NOTHING;
+
+
+
+
+-- 1. Справочники
+INSERT INTO roles (id, name) VALUES (1, 'Администратор'), (2, 'Менеджер'), (3, 'Клиент') ON CONFLICT (id) DO NOTHING;
+INSERT INTO categories (id, name) VALUES (1, 'Конструкторы'), (2, 'Куклы'), (3, 'Мягкие игрушки') ON CONFLICT (id) DO NOTHING;
+INSERT INTO units (id, name) VALUES (1, 'шт.'), (2, 'компл.') ON CONFLICT (id) DO NOTHING;
+INSERT INTO suppliers (id, name) VALUES (1, 'ООО Игрушки Оптом'), (2, 'ТД Мир Детства') ON CONFLICT (id) DO NOTHING;
+INSERT INTO manufacturers (id, name) VALUES (1, 'Полесье'), (2, 'Mattel'), (3, 'Мякиши') ON CONFLICT (id) DO NOTHING;
+
+-- 2. Пользователи
+INSERT INTO users (id, username, password_hash, full_name, role_id) VALUES 
+(1, 'admin', 'admin123', 'Иванов Пётр', 1)
+ON CONFLICT (id) DO NOTHING;
+
+-- 3. Товары (очень просто)
+INSERT INTO products (id, name, description, category_id, manufacturer_id, supplier_id, unit_id, stock_quantity, price, discount) VALUES 
+(1, 'Техно-Робот', 'Робот-трансформер', 1, 1, 1, 1, 15, 2500, 10),
+(2, 'Барби', 'Кукла', 2, 2, 2, 1, 8, 1800, 20)
+ON CONFLICT (id) DO NOTHING;
+
+COMMIT;
