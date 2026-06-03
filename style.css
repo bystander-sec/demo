@@ -1,0 +1,252 @@
+/* Общие стили для всего приложения */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* Шапка сайта (Header) */
+.header {
+    background-color: #212529;
+    color: #fff;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.95rem;
+}
+
+.logout-btn {
+    color: #fff;
+    background-color: #dc3545;
+    padding: 6px 12px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.logout-btn:hover {
+    background-color: #c82333;
+}
+
+/* Форма авторизации (Окно входа) */
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.login-title {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    color: #212529;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 10px;
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+}
+
+.btn-secondary {
+    display: block;
+    text-align: center;
+    width: 100%;
+    padding: 10px;
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-top: 10px;
+    box-sizing: border-box;
+}
+
+.btn-secondary:hover {
+    background-color: #5c636a;
+}
+
+/* Карточки товаров (Список) */
+.product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 30px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.product-card {
+    display: flex;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.product-image {
+    width: 180px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-right: 25px;
+    border: 1px solid #f0f0f0;
+}
+
+.product-info {
+    flex-grow: 1;
+}
+
+.product-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #212529;
+}
+
+.product-meta {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 12px;
+}
+
+.product-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+}
+
+/* Логика цен из ТЗ */
+.price-box {
+    margin-top: 10px;
+}
+
+.price-old {
+    color: #dc3545;
+    text-decoration: line-through;
+    margin-right: 10px;
+    font-size: 1rem;
+}
+
+.price-new {
+    color: #212529;
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+/* Специфическая подсветка фонов по требованиям ТЗ */
+.bg-out-of-stock {
+    background-color: #add8e6 !important; /* Голубой при отсутствии товара */
+}
+
+.bg-high-discount {
+    background-color: #FFDEAD !important; /* Цвет Навахо при скидке > 17% */
+}
+
+/* Ошибки */
+.alert-danger {
+    background-color: #f8d7da;
+    color: #842029;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border: 1px solid #f5c2c7;
+    font-size: 0.9rem;
+}
+/* Стили для Модуля 3: Панель фильтров */
+.controls-container {
+    background-color: #ffffff;
+    padding: 15px 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.control-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.control-item label {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #495057;
+}
+
+.control-item input, .control-item select {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    outline: none;
+    background-color: #fff;
+    min-width: 200px;
+}
+
+.control-item input:focus, .control-item select:focus {
+    border-color: #76e3d7; /* Фирменный цвет из ТЗ */
+    box-shadow: 0 0 0 2px rgba(118, 227, 215, 0.25);
+}

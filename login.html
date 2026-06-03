@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация — Игрушки</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+</head>
+<body>
+
+    <div class="login-container">
+        <h2 class="login-title">Вход в систему</h2>
+
+        {% if error %}
+            <div class="alert-danger">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="username">Логин:</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Введите логин" required autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Введите пароль" required autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn-primary">Войти</button>
+        </form>
+
+        <a href="/guest" class="btn-secondary">Войти как Гость</a>
+    </div>
+
+</body>
+</html>

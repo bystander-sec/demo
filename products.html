@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список товаров — Игрушки</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    <style>
+        .admin-add-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 12px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-right: 15px;
+        }
+        .admin-add-btn:hover { background-color: #218838; }
+        
+        /* Стили для кнопки удаления */
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            width: 100%;
+        }
+        .delete-btn:hover { background-color: #c82333; }
+        
+        .user-info { display: flex; align-items: center; gap: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-left">
+            <img src="{{ url_for('static', path='logo.png') }}" alt="Логотип" height="35">
+            <span class="header-title">Панель управления складом</span>
+        </div>
+        
+        <div class="user-info">
+            <span>Вы вошли как: <strong>{{ user.full_name }}</strong> ({{ user.role }})</span>
+            
+            {% if user.role == 'Администратор' %}
+                <a href="/add_product" class="admin-add-btn">+ Добавить товар</a>
+            {% endif %}
+
+            <a href="/logout" class="logout-btn">Выйти</a>
+        </div>
+    </div>
+
+    <div class="controls-container">
+        <div class="control-item">
+            <label for="search-input">Поиск по названию:</label>
+            <input type="text" id="search-input" placeholder="Введите название...">
+        </div>
+
+        <div class="control-item">
+            <label for="sort-select">Сортировка по цене:</label>
+            <select id="sort-select">
+                <option value="none">Без сортировки</option>
+                <option value="asc">По возрастанию стоимости</option>
+                <option value="desc">По убыванию стоимости</option>
+            </select>
+        </div>
+
+        <div class="control-item">
+            <label for="filter-select">Производитель:</label>
+            <select id="filter-select">
+                <option value="all">Все производители</option>
+            </select>
+        </div>
+        
+        <div class="control-item" style="margin-left: auto; font-weight: bold; align-self: flex-end;">
+            Показано: <span id="items-counter">0</span> из <span id="items-total">0</span>
+        </div>
+    </div>
+
+    <div class="product-list" id="product-list-container">
+        {% for p in products %}
+            
+            {% set bg_class = "" %}
+            {% if p.stockQuantity == 0 %}
+                {% set bg_class = "bg-out-of-stock" %}
+            {% elif p.discount > 17 %}
+                {% set bg_class = "bg-high-discount" %}
+            {% endif %}
+
+            <div class="product-card {{ bg_class }}" 
+                 data-price="{{ p.final_price }}"
+                 data-name="{{ p.name | lower }}" 
+                 data-manufacturer="{{ p.manufacturer if p.manufacturer else 'Не указан' }}">
+                
+                <img src="{{ url_for('static', path=p.imagePath) if p.imagePath else url_for('static', path='picture.png') }}" alt="Фото {{ p.name }}" class="product-image">
+                
+                <div class="product-info">
+                    <div class="product-title">{{ p.name }}</div>
+                    <div class="product-meta">Категория: {{ p.category if p.category else 'Общая' }}</div>
+                    
+                    <p style="font-size: 0.95rem; margin: 0 0 15px 0; color: #495057;">{{ p.description or 'Описание отсутствует' }}</p>
+                    
+                    <div class="product-details">
+                        <div><strong>Производитель:</strong> <span class="item-manufacturer">{{ p.manufacturer if p.manufacturer else 'Не указан' }}</span></div>
+                        <div><strong>Остаток:</strong> {{ p.stock_quantity }} шт.</div>
+                        <div><strong>Скидка:</strong> {{ p.discount }}%</div>
+                    </div>
+                    
+                    <div class="price-box">
+                        <strong>Стоимость:</strong>
+                            {% if p.discount > 0 %}
+                                <span class="price-old">{{ p.price }} руб.</span>
+                                <span class="price-new">{{ p.final_price }} руб.</span>
+                            {% else %}
+                                <span class="price-new">{{ p.price }} руб.</span>
+                            {% endif %}
+                    </div>
+
+                    {% if user.role == 'Администратор' %}
+                        <form action="/delete_product/{{ p.id }}" method="POST" style="margin-top: 15px;">
+                            <button type="submit" 
+                                    class="delete-btn"
+                                    onclick="return confirm('Вы уверены, что хотите удалить товар &quot;{{ p.name }}&quot;?')">
+                                Удалить товар
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+            
+        {% else %}
+            <div class="no-goods" style="text-align: center; width: 100%; margin-top: 50px; color: #6c757d;">
+                <h3>Товары не найдены</h3>
+                <p>База данных пуста. Добавьте товары на склад.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.getElementById("search-input");
+            const sortSelect = document.getElementById("sort-select");
+            const filterSelect = document.getElementById("filter-select");
+            const container = document.getElementById("product-list-container");
+            const cards = Array.from(container.getElementsByClassName("product-card"));
+            
+            const counterCurrent = document.getElementById("items-counter");
+            const counterTotal = document.getElementById("items-total");
+            
+            if (counterTotal) counterTotal.textContent = cards.length;
+
+            const manufacturers = new Set();
+            cards.forEach(card => {
+                const m = card.getAttribute("data-manufacturer");
+                if (m) manufacturers.add(m);
+            });
+            
+            manufacturers.forEach(m => {
+                const opt = document.createElement("option");
+                opt.value = m;
+                opt.textContent = m;
+                filterSelect.appendChild(opt);
+            });
+
+            function filterProducts() {
+                const searchText = searchInput.value.toLowerCase().trim();
+                const selectedManufacturer = filterSelect.value;
+                
+                let visibleCount = 0;
+
+                cards.forEach(card => {
+                    const name = card.getAttribute("data-name") || "";
+                    const manufacturer = card.getAttribute("data-manufacturer") || "";
+                    
+                    const matchesSearch = name.includes(searchText);
+                    const matchesFilter = (selectedManufacturer === "all" || manufacturer === selectedManufacturer);
+
+                    if (matchesSearch && matchesFilter) {
+                        card.style.display = "flex";
+                        visibleCount++;
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
+
+                if (counterCurrent) counterCurrent.textContent = visibleCount;
+            }
+
+            function sortProducts() {
+                const sortBy = sortSelect.value;
+                if (sortBy === "none") return;
+
+                const sortedCards = cards.sort((a, b) => {
+                    const priceA = parseFloat(a.getAttribute("data-price")) || 0;
+                    const priceB = parseFloat(b.getAttribute("data-price")) || 0;
+
+                    return sortBy === "asc" ? priceA - priceB : priceB - priceA;
+                });
+
+                sortedCards.forEach(card => container.appendChild(card));
+            }
+
+            searchInput.addEventListener("input", filterProducts);
+            filterSelect.addEventListener("change", filterProducts);
+            sortSelect.addEventListener("change", () => {
+                sortProducts();
+                filterProducts();
+            });
+
+            filterProducts();
+        });
+    </script>
+</body>
+</html>

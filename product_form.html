@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление товара</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Добавление нового товара</h2>
+        <form action="/add_product" method="POST">
+            <div class="form-group">
+                <label>Название товара:</label>
+                <input type="text" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Описание:</label>
+                <textarea name="description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Цена:</label>
+                <input type="number" step="0.01" name="price" required>
+            </div>
+
+            <div class="form-group">
+                <label>Количество на складе:</label>
+                <input type="number" name="stock_quantity" required>
+            </div>
+
+            <div class="form-group">
+                <label>Скидка (%):</label>
+                <input type="number" name="discount" value="0">
+            </div>
+
+            <div class="form-group">
+                <label>Категория:</label>
+                <select name="category_id">
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Производитель:</label>
+                <select name="manufacturer_id">
+                    {% for m in manufacturers %}
+                        <option value="{{ m.id }}">{{ m.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Поставщик:</label>
+                <select name="supplier_id">
+                    {% for s in suppliers %}
+                        <option value="{{ s.id }}">{{ s.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Единица измерения:</label>
+                <select name="unit_id">
+                    {% for u in units %}
+                        <option value="{{ u.id }}">{{ u.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit">Сохранить товар</button>
+            <a href="/products">Отмена</a>
+        </form>
+    </div>
+</body>
+</html>

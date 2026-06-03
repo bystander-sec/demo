@@ -1,0 +1,11 @@
+static
+    css
+        style.css
+    logo.png
+    pictures.png
+templates
+    all.html
+main.py
+schema.py
+models.py
+database.py
